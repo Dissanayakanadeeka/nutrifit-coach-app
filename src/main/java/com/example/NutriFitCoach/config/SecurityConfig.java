@@ -1,5 +1,6 @@
 package com.example.NutriFitCoach.config;
 
+import com.example.NutriFitCoach.security.JwtAuthenticationFilter;
 import com.example.NutriFitCoach.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,31 +13,39 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+    
     private final UserDetailsServiceImpl userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService,
+                          JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll()
-                //.requestMatchers("/api/foods/**").permitAll()
-                //.requestMatchers("/api/meals/**").permitAll()
-                //.requestMatchers("/api/users").permitAll()
+                .requestMatchers("/api/meals/**").authenticated()
+                .requestMatchers("/api/foods/**").permitAll()
+                .requestMatchers("/api/recommendations/**").authenticated() 
                 .anyRequest().authenticated()
-            );
-        //http.formLogin(Customizer.withDefaults());
-        //http.httpBasic(Customizer.withDefaults());
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -49,6 +58,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
 }
+

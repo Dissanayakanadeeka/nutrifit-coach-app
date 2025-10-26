@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import com.example.NutriFitCoach.exception.ResourceNotFoundException;
-
+import com.example.NutriFitCoach.dto.MealSummaryDTO;
 @Service
 @Transactional
 public class MealLogService {
@@ -38,6 +38,7 @@ public class MealLogService {
                 .fat(n.fat)
                 .consumedAt(consumedAt == null ? LocalDateTime.now() : consumedAt)
                 .build();
+        System.out.println("🟡 Saving meal log for user ID: " + m.getUser().getId());
         return mealRepo.save(m);
     }
 
@@ -48,17 +49,25 @@ public class MealLogService {
         return mealRepo.findByUserAndConsumedAtBetweenOrderByConsumedAtAsc(user, start, end);
     }
 
-    public NutritionSummary getSummaryForDate(String username, LocalDate date) {
-        User user = userRepo.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", username));
-        LocalDateTime start = date.atStartOfDay();
-        LocalDateTime end = date.atTime(LocalTime.MAX);
-        Object[] row = mealRepo.summaryTotals(user, start, end);
-        double c = row == null ? 0.0 : toDouble(row[0]);
-        double p = row == null ? 0.0 : toDouble(row[1]);
-        double cr = row == null ? 0.0 : toDouble(row[2]);
-        double f = row == null ? 0.0 : toDouble(row[3]);
-        return new NutritionSummary(c, p, cr, f);
-    }
+public NutritionSummary getSummaryForDate(String username, LocalDate date) {
+    User user = userRepo.findByUsername(username)
+            .orElseThrow(() -> new ResourceNotFoundException("User", username));
+
+    LocalDateTime start = date.atStartOfDay();
+    LocalDateTime end = date.atTime(LocalTime.MAX);
+
+    MealSummaryDTO row = mealRepo.summaryTotals(user, start, end);
+
+    // row will never be null because of coalesce(0)
+    double calories = row.getCalories() != null ? row.getCalories() : 0.0;
+    double protein  = row.getProtein() != null ? row.getProtein() : 0.0;
+    double carbs    = row.getCarbs() != null ? row.getCarbs() : 0.0;
+    double fat      = row.getFat() != null ? row.getFat() : 0.0;
+
+    return new NutritionSummary(calories, protein, carbs, fat);
+}
+
+
 
     private double toDouble(Object o) { return o == null ? 0.0 : ((Number)o).doubleValue(); }
 

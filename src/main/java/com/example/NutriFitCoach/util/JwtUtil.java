@@ -3,7 +3,7 @@ package com.example.NutriFitCoach.util;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
-
+import java.util.Base64;  
 import java.security.Key;
 import java.util.Date;
 
@@ -11,7 +11,8 @@ import java.util.Date;
 public class JwtUtil {
 
     // ✅ Secure random key for HS512
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    private static final String SECRET_KEY = "SuperSecureSecretKeyThatIsLongEnoughForHS5121234567890";
+    private final Key key = Keys.hmacShaKeyFor(Base64.getEncoder().encode(SECRET_KEY.getBytes()));
 
     private final long jwtExpirationMs = 86400000; // 24h
 

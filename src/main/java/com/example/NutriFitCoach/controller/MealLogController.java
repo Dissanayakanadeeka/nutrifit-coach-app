@@ -38,16 +38,26 @@ public class MealLogController {
 
     // Get daily logs
     @GetMapping
-    public List<MealLogDTO> getForDate(@RequestParam(required = false) String date, Authentication auth) {
+    public ResponseEntity<?> getForDate(@RequestParam(required = false) String date, Authentication auth) {
+        if (auth == null || !auth.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
         LocalDate d = date == null ? LocalDate.now() : LocalDate.parse(date);
-        return mealLogService.getForDate(auth.getName(), d).stream().map(this::mapToDto).collect(Collectors.toList());
-    }
+        var result = mealLogService.getForDate(auth.getName(), d)
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
+}
 
     // Get summary
     @GetMapping("/summary")
-    public MealLogService.NutritionSummary getSummary(@RequestParam(required = false) String date, Authentication auth) {
+    public ResponseEntity<?> getSummary(@RequestParam(required = false) String date, Authentication auth) {
+        if (auth == null || !auth.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
         LocalDate d = date == null ? LocalDate.now() : LocalDate.parse(date);
-        return mealLogService.getSummaryForDate(auth.getName(), d);
+        return ResponseEntity.ok(mealLogService.getSummaryForDate(auth.getName(), d));
     }
 
     // helper mapping methods...

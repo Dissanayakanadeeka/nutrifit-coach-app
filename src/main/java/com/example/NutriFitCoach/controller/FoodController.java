@@ -3,7 +3,7 @@ package com.example.NutriFitCoach.controller;
 import com.example.NutriFitCoach.entity.FoodItem;
 import com.example.NutriFitCoach.dto.FoodItemDTO;
 import com.example.NutriFitCoach.dto.FoodItemCreateDTO;
-
+import com.example.NutriFitCoach.repository.FoodItemRepository;
 import com.example.NutriFitCoach.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,6 +23,7 @@ import java.util.Map;
 public class FoodController {
 
     private final FoodService foodService;
+    private final FoodItemRepository foodItemRepository;
 
     @GetMapping
     public Page<FoodItemDTO> search(@RequestParam(required = false) String q,
@@ -93,5 +94,19 @@ public class FoodController {
         item.getBarcode()
     );
 }
+
+
+    // Search foods by name (for typeahead)
+    @GetMapping("/search")
+    public List<FoodItem> searchFoodItems(@RequestParam String query) {
+        return foodItemRepository
+                .findByNameContainingIgnoreCase(query, PageRequest.of(0, 10)) // limit to 10 results
+                .getContent();
+    }
+
+    @GetMapping("/all")
+    public List<FoodItem> getAllFoodItems() {
+        return foodItemRepository.findAll();
+    }
 
 }

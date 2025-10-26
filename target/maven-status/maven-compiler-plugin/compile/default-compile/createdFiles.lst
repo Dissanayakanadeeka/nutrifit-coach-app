@@ -1,9 +1,12 @@
+com/example/NutriFitCoach/controller/CalorieController.class
 com/example/NutriFitCoach/dto/MealLogDTO.class
 com/example/NutriFitCoach/dto/FoodItemDTO.class
+com/example/NutriFitCoach/entity/UserProfile$UserProfileBuilder.class
 com/example/NutriFitCoach/service/UserDetailsServiceImpl.class
 com/example/NutriFitCoach/service/FoodService.class
 com/example/NutriFitCoach/controller/UserController.class
 com/example/NutriFitCoach/controller/MealLogController.class
+com/example/NutriFitCoach/dto/DailyCalorieDTO.class
 com/example/NutriFitCoach/entity/FoodItem.class
 com/example/NutriFitCoach/NutriFitCoachApplication.class
 com/example/NutriFitCoach/dto/SignupRequest.class
@@ -11,8 +14,10 @@ com/example/NutriFitCoach/entity/FoodItem$FoodItemBuilder.class
 com/example/NutriFitCoach/util/JwtUtil.class
 com/example/NutriFitCoach/repository/UserRepository.class
 com/example/NutriFitCoach/entity/User$UserBuilder.class
+com/example/NutriFitCoach/dto/MealSummaryDTO.class
 com/example/NutriFitCoach/service/UserService.class
 com/example/NutriFitCoach/entity/MealLog.class
+com/example/NutriFitCoach/entity/UserProfile.class
 com/example/NutriFitCoach/config/SecurityConfig.class
 com/example/NutriFitCoach/dto/MealLogCreateDTO.class
 com/example/NutriFitCoach/controller/FoodController.class
@@ -22,7 +27,10 @@ com/example/NutriFitCoach/security/JwtAuthenticationFilter.class
 com/example/NutriFitCoach/dto/Nutrition.class
 com/example/NutriFitCoach/dto/LoginRequest.class
 com/example/NutriFitCoach/controller/AuthController.class
+com/example/NutriFitCoach/repository/UserProfileRepository.class
+com/example/NutriFitCoach/controller/UserProfileController.class
 com/example/NutriFitCoach/entity/MealLog$MealLogBuilder.class
+com/example/NutriFitCoach/controller/RecommendationController.class
 com/example/NutriFitCoach/exception/ResourceNotFoundException.class
 com/example/NutriFitCoach/service/FoodService$Nutrition.class
 com/example/NutriFitCoach/dto/FoodItemCreateDTO.class
